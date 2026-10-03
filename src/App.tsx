@@ -165,13 +165,16 @@ export default function App() {
 
   // Explication de la valeur trouvée par la baguette, affichée en infobulle à côté du champ.
   const solveMessage =
-    solved === null
+    (solved === null
       ? 'Aucune valeur de ce paramètre ne permet de stabiliser le ratio avec les autres valeurs.'
       : solving === 'dette'
         ? ecartTerme < 0
           ? "Niveau vers lequel la dette converge d'elle-même avec ces paramètres (taux < croissance nominale)."
           : "Seuil au-delà duquel la dette s'emballe, en deçà duquel elle se résorbe (taux > croissance nominale)."
-        : `Valeur qui ramène le ratio dette/PIB à son niveau initial dans ${effective.horizon} ans.`
+        : `Valeur qui ramène le ratio dette/PIB à son niveau initial dans ${effective.horizon} ans.`) +
+    (solving === 'inflation'
+      ? " Attention : en général, une hausse de l'inflation est suivie d'une hausse des taux d'intérêt, ce qui tend à annuler son effet favorable sur le ratio de dette. Le simulateur, lui, garde les taux fixes."
+      : '')
 
   const renderField = (f: Field) => {
     const isFree = !!f.solvable && solving === f.solvable
