@@ -4,7 +4,8 @@ import type { YearRow } from './debt'
 const H = 300
 const M = { top: 16, right: 20, bottom: 32, left: 48 }
 
-const fmt = (x: number, digits = 1) => x.toLocaleString('fr-FR', { minimumFractionDigits: digits, maximumFractionDigits: digits })
+const fmt = (x: number, digits = 1) =>
+  x.toLocaleString('fr-FR', { minimumFractionDigits: digits, maximumFractionDigits: digits })
 
 function niceTicks(min: number, max: number, count = 5) {
   // Courbe (quasi) plate : on impose une amplitude minimale, sinon le pas tombe sous la
@@ -77,8 +78,14 @@ export function RatioChart({ rows, reference, baseYear, actual }: Props) {
     <div className="chart" ref={wrapRef}>
       {showActual && (
         <div className="legend">
-          <span><i className="swatch projection" />Projection</span>
-          <span><i className="swatch reel" />Réel (FMI)</span>
+          <span>
+            <i className="swatch projection" />
+            Projection
+          </span>
+          <span>
+            <i className="swatch reel" />
+            Réel (FMI)
+          </span>
         </div>
       )}
       <svg width={width} height={H} role="img" aria-label="Projection du ratio dette/PIB">
@@ -90,13 +97,20 @@ export function RatioChart({ rows, reference, baseYear, actual }: Props) {
             </text>
           </g>
         ))}
-        {rows.filter((r) => r.annee % xStep === 0).map((r) => (
-          <text key={r.annee} className="axis" x={x(r.annee)} y={H - 10} textAnchor="middle">
-            {baseYear + r.annee}
-          </text>
-        ))}
+        {rows
+          .filter((r) => r.annee % xStep === 0)
+          .map((r) => (
+            <text key={r.annee} className="axis" x={x(r.annee)} y={H - 10} textAnchor="middle">
+              {baseYear + r.annee}
+            </text>
+          ))}
         <line className="ref" x1={M.left} x2={M.left + iw} y1={y(reference)} y2={y(reference)} />
-        <text className="ref-label" x={M.left + iw} y={y(reference) + (last.ratio > reference ? 14 : -6)} textAnchor="end">
+        <text
+          className="ref-label"
+          x={M.left + iw}
+          y={y(reference) + (last.ratio > reference ? 14 : -6)}
+          textAnchor="end"
+        >
           niveau initial
         </text>
         {showActual && (
@@ -107,7 +121,12 @@ export function RatioChart({ rows, reference, baseYear, actual }: Props) {
         )}
         <path className="series" d={path} />
         <circle className="dot" cx={x(last.annee)} cy={y(last.ratio)} r={4} />
-        <text className="end-label" x={x(last.annee) - 8} y={y(last.ratio) + (last.ratio >= reference ? -10 : 18)} textAnchor="end">
+        <text
+          className="end-label"
+          x={x(last.annee) - 8}
+          y={y(last.ratio) + (last.ratio >= reference ? -10 : 18)}
+          textAnchor="end"
+        >
           {fmt(last.ratio)}%
         </text>
         {h && (
@@ -133,11 +152,23 @@ export function RatioChart({ rows, reference, baseYear, actual }: Props) {
           style={{ left: Math.min(x(h.annee) + 12, width - 190), top: Math.max(y(h.ratio) - 70, 0) }}
         >
           <strong>{baseYear + h.annee}</strong>
-          <span>Projection <b>{fmt(h.ratio)}%</b></span>
-          {hActual && showActual && <span>Réel <b>{fmt(hActual.ratio)}%</b></span>}
-          <span>Dette <b>{fmt(h.dette, 0)} Md$</b></span>
-          <span>Taux moyen <b>{fmt(h.taux, 2)}%</b></span>
-          <span>Charge <b>{fmt(h.charge, 2)}% PIB</b></span>
+          <span>
+            Projection <b>{fmt(h.ratio)}%</b>
+          </span>
+          {hActual && showActual && (
+            <span>
+              Réel <b>{fmt(hActual.ratio)}%</b>
+            </span>
+          )}
+          <span>
+            Dette <b>{fmt(h.dette, 0)} Md$</b>
+          </span>
+          <span>
+            Taux moyen <b>{fmt(h.taux, 2)}%</b>
+          </span>
+          <span>
+            Charge <b>{fmt(h.charge, 2)}% PIB</b>
+          </span>
         </div>
       )}
     </div>

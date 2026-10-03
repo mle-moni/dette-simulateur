@@ -47,7 +47,15 @@ export function project(p: Params): YearRow[] {
   let Y = p.pib
   let D = (p.dette / 100) * Y
   const rows: YearRow[] = [
-    { annee: 0, pib: Y, dette: D, ratio: p.dette, taux: p.taux, charge: chargeFromParams(p), deficitTotal: p.deficitPrimaire + chargeFromParams(p) },
+    {
+      annee: 0,
+      pib: Y,
+      dette: D,
+      ratio: p.dette,
+      taux: p.taux,
+      charge: chargeFromParams(p),
+      deficitTotal: p.deficitPrimaire + chargeFromParams(p),
+    },
   ]
   for (let t = 1; t <= p.horizon; t++) {
     const interets = i * D
@@ -58,7 +66,15 @@ export function project(p: Params): YearRow[] {
     i = Dn > 0 ? (i * ancien + r * (Dn - ancien)) / Dn : r
     D = Dn
     const charge = (interets / Y) * 100
-    rows.push({ annee: t, pib: Y, dette: D, ratio: (D / Y) * 100, taux: i * 100, charge, deficitTotal: p.deficitPrimaire + charge })
+    rows.push({
+      annee: t,
+      pib: Y,
+      dette: D,
+      ratio: (D / Y) * 100,
+      taux: i * 100,
+      charge,
+      deficitTotal: p.deficitPrimaire + charge,
+    })
   }
   return rows
 }
@@ -84,7 +100,13 @@ export function solve(p: Params, key: SolvableKey): number | null {
   }
   let [lo, hi] = SEARCH[key]
   let flo = gap(lo)
-  const fhi = gap(hi)
+  let fhi = gap(hi)
+  // Quand taux < croissance nominale, un ratio stable existe toujours mais peut être
+  // très élevé (déficit primaire / écart) : on élargit la recherche jusqu'à 10 000 000 %.
+  while (key === 'dette' && Number.isFinite(fhi) && Math.sign(flo) === Math.sign(fhi) && hi < 1e7) {
+    hi *= 10
+    fhi = gap(hi)
+  }
   if (!Number.isFinite(flo) || !Number.isFinite(fhi) || Math.sign(flo) === Math.sign(fhi)) return null
   // Dichotomie : on s'arrête dès que l'intervalle fait moins de 1e-6 (largement assez pour l'affichage).
   while (hi - lo > 1e-6) {

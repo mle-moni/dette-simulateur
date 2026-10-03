@@ -12,6 +12,9 @@
   --grid: #ecebe7;
   --up: #c43c3b;
   --down: #1a7f4e;
+  --warn: #9a5b00;
+  --warn-bg: #fff6e5;
+  --warn-border: #f0c36d;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, 'SF Mono', Consolas, monospace;
   font: 15px/1.45 var(--sans);
@@ -35,9 +38,21 @@
     --grid: #262624;
     --up: #e66767;
     --down: #3fbf7f;
+    --warn: #f5b84a;
+    --warn-bg: #2a2112;
+    --warn-border: #6b4f1a;
   }
 }
 
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); }
-h1, h2 { margin: 0; color: var(--text); }
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+}
+h1,
+h2 {
+  margin: 0;
+  color: var(--text);
+}

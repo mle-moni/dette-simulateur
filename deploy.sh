@@ -5,6 +5,8 @@
 # exit on error
 set -e
 
+git pull
+
 yarn install
 
 yarn build

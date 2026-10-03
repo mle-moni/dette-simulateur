@@ -12,22 +12,55 @@ const LAST = 2026
 const LAST_FPP = 2024
 
 const PAYS = {
-  FRA: 'France', DEU: 'Allemagne', ITA: 'Italie', ESP: 'Espagne', GRC: 'Grèce', PRT: 'Portugal',
-  BEL: 'Belgique', NLD: 'Pays-Bas', IRL: 'Irlande', GBR: 'Royaume-Uni', USA: 'États-Unis', CAN: 'Canada', JPN: 'Japon',
+  FRA: 'France',
+  DEU: 'Allemagne',
+  ITA: 'Italie',
+  ESP: 'Espagne',
+  GRC: 'Grèce',
+  PRT: 'Portugal',
+  BEL: 'Belgique',
+  NLD: 'Pays-Bas',
+  IRL: 'Irlande',
+  GBR: 'Royaume-Uni',
+  USA: 'États-Unis',
+  CAN: 'Canada',
+  JPN: 'Japon',
 }
 
 // Taux souverains à 10 ans absents de FPP après 2024 (saisis à la main).
 // 2025 : moyennes annuelles approximatives. 2026 : cotations de fin d'été / fin septembre 2026.
 const TAUX_10A = {
-  FRA: { 2025: 3.35, 2026: 4.8 }, DEU: { 2025: 2.6, 2026: 3.85 }, ITA: { 2025: 3.6, 2026: 4.8 },
-  ESP: { 2025: 3.2, 2026: 4.15 }, GRC: { 2025: 3.4, 2026: 4.5 }, PRT: { 2025: 3.1, 2026: 3.44 },
-  BEL: { 2025: 3.2, 2026: 3.76 }, NLD: { 2025: 2.8, 2026: 3.29 }, IRL: { 2025: 2.9, 2026: 3.35 },
-  GBR: { 2025: 4.6, 2026: 5.31 }, USA: { 2025: 4.3, 2026: 5.29 }, CAN: { 2025: 3.3, 2026: 3.97 },
+  FRA: { 2025: 3.35, 2026: 4.8 },
+  DEU: { 2025: 2.6, 2026: 3.85 },
+  ITA: { 2025: 3.6, 2026: 4.8 },
+  ESP: { 2025: 3.2, 2026: 4.15 },
+  GRC: { 2025: 3.4, 2026: 4.5 },
+  PRT: { 2025: 3.1, 2026: 3.44 },
+  BEL: { 2025: 3.2, 2026: 3.76 },
+  NLD: { 2025: 2.8, 2026: 3.29 },
+  IRL: { 2025: 2.9, 2026: 3.35 },
+  GBR: { 2025: 4.6, 2026: 5.31 },
+  USA: { 2025: 4.3, 2026: 5.29 },
+  CAN: { 2025: 3.3, 2026: 3.97 },
   JPN: { 2025: 1.4, 2026: 3.07 },
 }
 
 // Durée moyenne de la dette (années) : pas de série historique, valeur typique par pays.
-const MATURITE = { FRA: 8.5, DEU: 7, ITA: 7, ESP: 8, GRC: 7.5, PRT: 7.5, BEL: 10, NLD: 7.5, IRL: 10, GBR: 14, USA: 6, CAN: 6.5, JPN: 9 }
+const MATURITE = {
+  FRA: 8.5,
+  DEU: 7,
+  ITA: 7,
+  ESP: 8,
+  GRC: 7.5,
+  PRT: 7.5,
+  BEL: 10,
+  NLD: 7.5,
+  IRL: 10,
+  GBR: 14,
+  USA: 6,
+  CAN: 6.5,
+  JPN: 9,
+}
 const maturite = (code, annee) => (code === 'GRC' && annee >= 2012 ? 19 : MATURITE[code]) // restructuration grecque
 
 async function series(indicator) {
@@ -37,7 +70,18 @@ async function series(indicator) {
   return json.values?.[indicator] ?? {}
 }
 
-const ids = ['d', 'ie', 'pb', 'rltir', 'GGXWDG_NGDP', 'GGXCNL_NGDP', 'GGXONLB_G01_GDP_PT', 'NGDP_RPCH', 'PCPIPCH', 'NGDPD']
+const ids = [
+  'd',
+  'ie',
+  'pb',
+  'rltir',
+  'GGXWDG_NGDP',
+  'GGXCNL_NGDP',
+  'GGXONLB_G01_GDP_PT',
+  'NGDP_RPCH',
+  'PCPIPCH',
+  'NGDPD',
+]
 const S = Object.fromEntries(await Promise.all(ids.map(async (id) => [id, await series(id)])))
 
 const get = (id, code, annee) => {
@@ -92,7 +136,8 @@ const pays = Object.entries(PAYS).map(([code, nom]) => {
     const d = dette(a)
     const rl = a <= LAST_FPP ? get('rltir', code, a) : null
     const tauxMarginal =
-      TAUX_10A[code][a] ?? (rl !== null && inflation !== null ? ((1 + rl / 100) * (1 + inflation / 100) - 1) * 100 : null)
+      TAUX_10A[code][a] ??
+      (rl !== null && inflation !== null ? ((1 + rl / 100) * (1 + inflation / 100) - 1) * 100 : null)
     const p = pb(a)
     annees[a] = {
       pib: round(get('NGDPD', code, a), 0),
@@ -110,12 +155,15 @@ const pays = Object.entries(PAYS).map(([code, nom]) => {
 
 const out = {
   genere: new Date().toISOString().slice(0, 10),
-  sources: 'FMI — Public Finances in Modern History (≤ 2024) et World Economic Outlook (croissance, inflation, PIB, prévisions 2025-2026)',
+  sources:
+    'FMI — Public Finances in Modern History (≤ 2024) et World Economic Outlook (croissance, inflation, PIB, prévisions 2025-2026)',
   pays,
 }
 await writeFile(new URL('../src/data/pays.json', import.meta.url), JSON.stringify(out) + '\n')
 
 for (const p of pays) {
-  const manquants = Object.entries(p.annees).filter(([, v]) => Object.values(v).some((x) => x === null)).map(([a]) => a)
+  const manquants = Object.entries(p.annees)
+    .filter(([, v]) => Object.values(v).some((x) => x === null))
+    .map(([a]) => a)
   console.log(p.code, manquants.length ? `incomplet : ${manquants.join(' ')}` : 'complet')
 }
