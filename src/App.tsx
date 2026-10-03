@@ -172,8 +172,7 @@ export default function App() {
       <header>
         <h1>Simulateur de dette</h1>
         <p className="lede">
-          Projetez le ratio dette/PIB à partir de quelques paramètres, puis libérez-en un pour trouver la valeur qui
-          stabilise la dette.
+          Projetez le ratio dette/PIB à partir de quelques paramètres.
         </p>
       </header>
 
